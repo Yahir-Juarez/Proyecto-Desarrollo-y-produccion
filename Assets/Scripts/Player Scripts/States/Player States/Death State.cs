@@ -2,17 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeathState : MonoBehaviour
+public class DeathState : MonoBehaviour, IState
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private Animator playerAnimator;
+    [SerializeField]
+    private Player instancePlayer;
+    private Rigidbody rbInstance;
+    public void CheckEnterConditions()
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Execute()
     {
-        
+
+    }
+
+    public void OnEnter()
+    {
+        playerAnimator = GetComponent<Animator>();
+        playerAnimator.SetBool("isDeath", true);
+    }
+
+    public void OnExit()
+    {
+
+    }
+    public void spawn()
+    {
+        if (instancePlayer.getLife() > 0)
+        {
+
+        }
     }
 }

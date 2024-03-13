@@ -4,23 +4,37 @@ using UnityEngine;
 
 public class DeathEnemy : MonoBehaviour, IState
 {
+    public Animator EnemyAnimator;
+    private Rigidbody rbInstance;
+    private SphereCollider sphere;
     public void CheckEnterConditions()
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public void Execute()
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public void OnEnter()
     {
-        throw new System.NotImplementedException();
+        if (rbInstance == null)
+        {
+            rbInstance = GetComponent<Rigidbody>();
+        }
+        if (sphere == null)
+        {
+            sphere = GetComponent<SphereCollider>();
+        }
+        sphere.isTrigger= true;
+        rbInstance.useGravity = false;
+        EnemyAnimator = GetComponent<Animator>();
+        EnemyAnimator.SetBool("isDeath", true);
     }
 
     public void OnExit()
     {
-        throw new System.NotImplementedException();
+        
     }
 }

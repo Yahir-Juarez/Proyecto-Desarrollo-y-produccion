@@ -9,6 +9,10 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     Camera instanceCamera;
+    [SerializeField]
+    private int m_damage = 1;
+    [SerializeField]
+    private int m_life = 3;
 
     public StateMachine<Player> stateMachine = new StateMachine<Player>();
 
@@ -16,19 +20,34 @@ public class Player : MonoBehaviour
     public WalkPlayer walkState;
     public RunPlayer runState;
     public JumpPlayer jumpState;
+    public ShotState shotState;
+    public DeathState deathState;
 
-    private float posCamera = 4.38f;
+    private Rigidbody rb;
 
+    private float limitY;
+    private float limitX = 6.33f;
+    private Quaternion rotacionA = Quaternion.Euler(0, 270, 0);
+    private Quaternion rotacionD = Quaternion.Euler(0, 90, 0);
+
+    bool direccionPlayer = true;
+    private List<GameObject> listArrow;
 
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         idleState = GetComponent<IdlePlayer>();
         walkState = GetComponent<WalkPlayer>();
         runState = GetComponent<RunPlayer>();
         jumpState = GetComponent<JumpPlayer>();
+        shotState = GetComponent<ShotState>();
+        deathState = GetComponent<DeathState>();
+        listArrow = new List<GameObject>();
         stateMachine.Owner = this;
         stateMachine.CurrentState = idleState;
+        limitY = instanceCamera.gameObject.transform.position.y;
+        limitX = instanceCamera.gameObject.transform.position.x;
     }
 
     // Update is called once per frame
@@ -36,18 +55,25 @@ public class Player : MonoBehaviour
     {
         stateMachine.Update();
         moveCamera();
+        orientation();
+        comprobateArrows();
+        //if (rb.velocity.y < -.1)
+        //{
+        //    Debug.Log("Esta cayendo");
+        //    Debug.Log(rb.velocity.y);
+        //}
     }
 
     private void moveCamera()
     {
-        if (transform.position.x > 0)
+        if (transform.position.x > limitX)
         {
             Vector3 posPlayer;
             posPlayer = Camera.main.transform.position;
             posPlayer.x = transform.position.x;
             instanceCamera.transform.position = posPlayer;
         }
-        if (transform.position.y > posCamera)
+        if (transform.position.y > limitY)
         {
             Vector3 posPlayer;
             posPlayer = Camera.main.transform.position;
@@ -56,6 +82,39 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void setDamage()
+    {
+
+    }
+
+    private void orientation()
+    {
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            // Aplica la rotación correspondiente
+            transform.rotation = rotacionD;
+            direccionPlayer = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            transform.rotation = rotacionA;
+            direccionPlayer = false;
+        }
+    }
+
+    public bool getDireccion()
+    {
+        return direccionPlayer;
+    }
+
+    public void setNewArrow(GameObject objectArrow)
+    {
+        listArrow.Add(objectArrow);
+    }
+    public List<GameObject> getListArrow()
+    {
+        return listArrow;
+    }
     //private void orientation()
     //{
     //    if (Input.GetAxis("Horizontal") != 0)
@@ -64,4 +123,35 @@ public class Player : MonoBehaviour
     //        visualRotation.rotation = Quaternion.Euler(rotation);
     //    }
     //}
+    public int getDamage()
+    {
+        return m_damage;
+    }
+
+    private void comprobateArrows()
+    {
+        if (listArrow.Count > 0)
+        {
+            for (int i = listArrow.Count - 1; i >= 0; i--) 
+            {
+                if (listArrow[i] == null)
+                {
+                    listArrow.RemoveAt(i);
+                }
+            }
+        }
+    }
+    public void setDamage(int damage)
+    {
+        m_life -= damage;
+    }
+    public int getLife()
+    {
+        return m_life;
+    }
+
+    public List<GameObject> getArrows()
+    {
+        return listArrow;
+    }
 }

@@ -15,8 +15,6 @@ public class WalkEnemy : MonoBehaviour, IState
     Player instancePlayer;
     [SerializeField]
     Enemy1 instanceEnemy;
-    [SerializeField]
-    BoxCollider instanceBox;
 
     private float distance = 0;
     private bool moveRight = true;
@@ -28,11 +26,17 @@ public class WalkEnemy : MonoBehaviour, IState
             moveX = moveX * -1;
         }
 
-        Vector3 MoveX = new Vector3(0, 0, moveX);
+        Vector3 MoveX = new Vector3(0, 0, 1);
 
         Instance.transform.Translate(MoveX * velocity * Time.deltaTime);
-        distance += MoveX.z * velocity * Time.deltaTime;
-
+        if (moveRight == true)
+        {
+            distance += MoveX.z * velocity * Time.deltaTime;
+        }
+        else
+        {
+            distance -= MoveX.z * velocity * Time.deltaTime;
+        }
         EnemyAnimator.SetFloat("Walk", moveX);
         if (distance >= perimeter)
         {
@@ -46,7 +50,16 @@ public class WalkEnemy : MonoBehaviour, IState
     }
     public void CheckEnterConditions()
     {
-        
+        if (instanceEnemy == null)
+        {
+            instanceEnemy = GetComponent<Enemy1>();
+        }
+        if (instanceEnemy.getLife() <= 0)
+        {
+            OnExit();
+            instanceEnemy.stateMachine.CurrentState = instanceEnemy.deathState;
+            instanceEnemy.stateMachine.CurrentState.OnEnter();
+        }
     }
 
     public void OnEnter()
@@ -57,38 +70,11 @@ public class WalkEnemy : MonoBehaviour, IState
     public void OnExit()
     {
         EnemyAnimator.SetFloat("Walk", 0);
+        EnemyAnimator.SetFloat("Run", 0);
     }
 
-    private void OnTriggerEnter(Collider cPlayer)
+    public bool getMove()
     {
-        if (cPlayer.gameObject.CompareTag("Player"))
-        {
-            Enemy1 instance = GetComponent<Enemy1>();
-            instance.stateMachine.CurrentState.OnExit();
-            instance.stateMachine.CurrentState = instance.runState;
-            instance.stateMachine.CurrentState.OnEnter();
-        }
-        if (cPlayer)
-        {
-
-        }
+        return moveRight;
     }
-    private void OnTriggerExit(Collider cPlayer)
-    {
-        if (cPlayer.gameObject.CompareTag("Player"))
-        {
-            instanceEnemy.stateMachine.CurrentState.OnExit();
-            instanceEnemy.stateMachine.CurrentState = instanceEnemy.walkState;
-            instanceEnemy.stateMachine.CurrentState.OnEnter();
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.tag == "Enemy")
-        {
-            Debug.Log("si");
-        }
-    }
-
 }

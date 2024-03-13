@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class JumpPlayer : MonoBehaviour, IState
 {
@@ -8,66 +9,143 @@ public class JumpPlayer : MonoBehaviour, IState
     float velocity = 7.5f;
     [SerializeField]
     GameObject Instance;
+    [SerializeField]
+    Player instancePlayer;
+    [SerializeField]
+    private float jumpForce = 20;
     public Animator PlayerAnimator;
+    private bool isJump = false;
+    private bool onFloor = true;
 
-    bool isFall = true;
+    private Rigidbody rb;
+
+    private void Awake()
+    {
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody>();
+        }
+    }
     public void CheckEnterConditions()
     {
-        //if (Input.GetAxis("Horizontal") == 0)
+        //if (onFloor == true)
         //{
-        //    Player instance = GetComponent<Player>();
-        //    instance.stateMachine.CurrentState = instance.idleState;
+        //    OnExit();
+        //    if (Input.GetAxis("Horizontal") == 0)
+        //    {
+        //        Player instance = GetComponent<Player>();
+        //        instance.stateMachine.CurrentState = instance.idleState;
+        //        instance.stateMachine.CurrentState.OnEnter();
+        //    }
+        //    else if (Input.GetKeyDown(KeyCode.LeftShift))
+        //    {
+        //        Player instance = GetComponent<Player>();
+        //        instance.stateMachine.CurrentState = instance.runState;
+        //        instance.stateMachine.CurrentState.OnEnter();
+        //    }
+        //    else
+        //    {
+        //        Player instance = GetComponent<Player>();
+        //        instance.stateMachine.CurrentState = instance.walkState;
+        //        instance.stateMachine.CurrentState.OnEnter();
+        //    }
         //}
-        //if (Input.GetKeyUp(KeyCode.LeftShift))
+        //if (rb.velocity.normalized.y == 0)
         //{
-        //    Player instance = GetComponent<Player>();
-        //    instance.stateMachine.CurrentState = instance.runState;
+        //    OnExit();
+        //    instancePlayer.stateMachine.CurrentState = instancePlayer.idleState;
+        //    instancePlayer.stateMachine.CurrentState.OnEnter();
         //}
     }
 
     public void Execute()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Salto");
+        }
+
         float MoveX = Input.GetAxis("Horizontal");
 
-        Vector3 MoveX_Z = new Vector3(0, 0, MoveX);
+        if (MoveX != 0)
+        {
+            Vector3 MoveX_Z = new Vector3(0, 0, 1);
+            Instance.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+        }
 
-        PlayerAnimator.SetFloat("Run", MoveX);
 
-        Instance.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+        //PlayerAnimator.SetFloat("Jump", rb.velocity.normalized.y);
+        if (isJump == true)
+        {
+            rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+            isJump = false;
+            Debug.Log("Salto 1");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+            Debug.Log("Salto 2"); 
+        }
     }
 
     public void OnEnter()
     {
-        isFall = false;
         PlayerAnimator.SetBool("isJump", true);
+        isJump = true;
+        //PlayerAnimator.SetBool("isJump", true);
+        //isJump = false;
     }
 
     public void OnExit()
     {
-        PlayerAnimator.SetBool("isJump", false);
+        //PlayerAnimator.SetBool("isJump", false);
+        //PlayerAnimator.SetBool("onFloor", true);
+        //isJump= false;
+        //onFloor = true;
+        isJump = false;
     }
 
-    void OnCollisionEnter(Collision cEnemy)
+    private void OnTriggerStay(Collider other)
     {
-        // Verificar si estamos colisionando con otro objeto
-        if (cEnemy.gameObject.CompareTag("Plattform"))
+        //PlayerAnimator.SetBool("onFloor", true);
+        //isJump = false;
+        //onFloor = true;
+        if (other.tag == "Plattform")
         {
+            onFloor = true;
+            PlayerAnimator.SetBool("onFloor", true);
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Plattform")
+        {
+            PlayerAnimator.SetBool("isJump", false);
             OnExit();
-            if (Input.GetAxis("Horizontal") == 0)
+            instancePlayer.stateMachine.CurrentState = instancePlayer.idleState;
+            instancePlayer.stateMachine.CurrentState.OnEnter();
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Plattform")
+        {
+            if (onFloor == true)
             {
-                Player instance = GetComponent<Player>();
-                instance.stateMachine.CurrentState = instance.idleState;
-            }
-            else if (Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                Player instance = GetComponent<Player>();
-                instance.stateMachine.CurrentState = instance.runState;
-            }
-            else 
-            {
-                Player instance = GetComponent<Player>();
-                instance.stateMachine.CurrentState = instance.walkState;
+                PlayerAnimator.SetBool("onFloor", false);
             }
         }
+        //if (other.tag != "Plattform") { return; }
+
+        //if (instancePlayer != null && onFloor != false) 
+        //{
+        //    onFloor = false;
+        //    instancePlayer.stateMachine.CurrentState.OnExit();
+        //    instancePlayer.stateMachine.CurrentState = instancePlayer.jumpState;
+        //    PlayerAnimator.SetBool("onFloor", false);
+        //    PlayerAnimator.SetBool("isJump", false);
+        //    isJump = true;
+        //}
     }
 }

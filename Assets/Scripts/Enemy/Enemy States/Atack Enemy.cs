@@ -9,20 +9,40 @@ public class AtackEnemy : MonoBehaviour, IState
     [SerializeField]
     Enemy1 instanceEnemy;
     float timePass = 0;
+    bool damageRecive = false;
     public void CheckEnterConditions()
     {
-        if (timePass >= .63)
+        if (instanceEnemy.getLife() < 0)
         {
-            EnemyAnimator.SetBool("isAtack", false);
-            Debug.Log("golpe");
+            OnExit();
+            instanceEnemy.stateMachine.CurrentState = instanceEnemy.deathState;
+            instanceEnemy.stateMachine.CurrentState.OnEnter();
+        }
+        if (timePass >= .63 && damageRecive == false)
+        {
+            damageRecive = true;
+            if (instanceEnemy.runState.GetObject() != null)
+            {
+                //Player player = instanceEnemy.runState.GetObject().AddComponent<Player>();
+                //player.setDamage();
+                Debug.Log("Recibio danio");
+            }
         }
         if (timePass >= 1.5)
         {
-            if (instanceEnemy != null)
+            if (instanceEnemy != null && instanceEnemy.runState.getPlayerObject() == null)
             {
-                instanceEnemy.stateMachine.CurrentState.OnExit();
-                instanceEnemy.stateMachine.CurrentState = instanceEnemy.runState;
-                instanceEnemy.stateMachine.CurrentState.OnEnter();
+                {
+                    damageRecive = false;
+                    OnExit();
+                    instanceEnemy.stateMachine.CurrentState = instanceEnemy.runState;
+                    instanceEnemy.stateMachine.CurrentState.OnEnter();
+                }
+            }
+            else
+            {
+                timePass = 0;
+                damageRecive = false;
             }
         }
     }
@@ -41,6 +61,6 @@ public class AtackEnemy : MonoBehaviour, IState
 
     public void OnExit()
     {
-        
+        EnemyAnimator.SetBool("isAtack", false);
     }
 }
