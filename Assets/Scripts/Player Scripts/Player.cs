@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     private int m_damage = 1;
     [SerializeField]
     private int m_life = 3;
+    [SerializeField]
+    private int m_arrows = 3;
 
     public StateMachine<Player> stateMachine = new StateMachine<Player>();
 
@@ -24,11 +26,13 @@ public class Player : MonoBehaviour
     public DeathState deathState;
 
     private Rigidbody rb;
-
+    //////////////////////Variables declaradas//////////////////
+    private int limitYDeath = -7;
     private float limitY;
     private float limitX = 6.33f;
     private Quaternion rotacionA = Quaternion.Euler(0, 270, 0);
     private Quaternion rotacionD = Quaternion.Euler(0, 90, 0);
+    private float actualSpeed = 10.0f;
 
     bool direccionPlayer = true;
     private List<GameObject> listArrow;
@@ -57,6 +61,7 @@ public class Player : MonoBehaviour
         moveCamera();
         orientation();
         comprobateArrows();
+        fallWorld(transform.position);
         //if (rb.velocity.y < -.1)
         //{
         //    Debug.Log("Esta cayendo");
@@ -153,5 +158,41 @@ public class Player : MonoBehaviour
     public List<GameObject> getArrows()
     {
         return listArrow;
+    }
+    private void fallWorld(Vector3 compare)
+    {
+
+        if (compare.y < limitYDeath)
+        {
+            setDamage(1);
+        }
+    }
+
+    public void setLife(int newLife)
+    {
+        m_life = newLife;
+    }
+
+    public void setActualSpeed(float speed)
+    {
+        actualSpeed = speed;
+    }
+    public float getActualSpeed()
+    {
+        return actualSpeed;
+    }
+
+    public void setArrows(int newArrow)
+    {
+        m_arrows += newArrow;
+    }
+
+    public void setArrowsCheats(int newArrows)
+    {
+        m_arrows = newArrows;
+    }
+    public int getArrow()
+    {
+        return m_arrows;
     }
 }

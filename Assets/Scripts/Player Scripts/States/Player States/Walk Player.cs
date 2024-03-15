@@ -8,7 +8,6 @@ public class WalkPlayer : MonoBehaviour, IState
     float velocity = 10.0f;
     [SerializeField]
     GameObject Instance;
-    [SerializeField]
     Player instancePlayer;
     public Animator PlayerAnimator;
     private Rigidbody rb;
@@ -16,6 +15,7 @@ public class WalkPlayer : MonoBehaviour, IState
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        instancePlayer = GetComponent<Player>();
     }
     public void Execute()
     {
@@ -33,6 +33,7 @@ public class WalkPlayer : MonoBehaviour, IState
     public void OnEnter()
     {
         //throw new System.NotImplementedException();
+        instancePlayer.setActualSpeed(velocity);
     }
 
     public void OnExit()
@@ -67,12 +68,17 @@ public class WalkPlayer : MonoBehaviour, IState
             instance.stateMachine.CurrentState = instance.runState;
             instance.stateMachine.CurrentState.OnEnter();
         }
-        else if (Input.GetKeyDown(KeyCode.Q))
+        else if (Input.GetKeyDown(KeyCode.Q) && instancePlayer.getArrow() > 0)
         {
             Player instance = GetComponent<Player>();
             OnExit();
             instance.stateMachine.CurrentState = instance.shotState;
             instance.stateMachine.CurrentState.OnEnter();
         }
+    }
+
+    public void setSpeed(float speed)
+    {
+        velocity = speed;
     }
 }

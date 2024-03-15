@@ -18,7 +18,6 @@ public class Enemy1 : MonoBehaviour
     [SerializeField]
     private int lifeEnemy = 1;
 
-    private float posCamera = 4.38f;
     public bool preparedAtack = false;
 
     private Quaternion rotacionA = Quaternion.Euler(0, 270, 0);

@@ -40,7 +40,7 @@ public class IdlePlayer : MonoBehaviour, IState
             //instancePlayer.stateMachine.CurrentState.OnEnter();
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && instancePlayer.getArrow() > 0)
         {
 
             instancePlayer.stateMachine.CurrentState.OnExit();

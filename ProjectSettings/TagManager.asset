@@ -9,6 +9,9 @@ TagManager:
   - Enemy
   - EnemyCollider
   - Feads
+  - EnemyParasite
+  - EnemyPaladin
+  - EnemyTirador
   layers:
   - Default
   - TransparentFX

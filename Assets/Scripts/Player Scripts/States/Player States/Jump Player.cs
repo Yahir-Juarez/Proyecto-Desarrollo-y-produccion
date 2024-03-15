@@ -81,18 +81,13 @@ public class JumpPlayer : MonoBehaviour, IState
             isJump = false;
             Debug.Log("Salto 1");
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
-            Debug.Log("Salto 2"); 
-        }
     }
 
     public void OnEnter()
     {
         PlayerAnimator.SetBool("isJump", true);
         isJump = true;
+        velocity = instancePlayer.getActualSpeed();
         //PlayerAnimator.SetBool("isJump", true);
         //isJump = false;
     }

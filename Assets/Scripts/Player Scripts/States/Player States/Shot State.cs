@@ -78,6 +78,7 @@ public class ShotState : MonoBehaviour, IState
     }
     public void exitShot()
     {
+        instancePLayer.setArrows(-1);
         instanceAnimator.SetBool("isShot", false);
         OnExit();
         instancePLayer.stateMachine.CurrentState = instancePLayer.idleState;

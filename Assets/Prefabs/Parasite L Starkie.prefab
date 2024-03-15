@@ -1767,6 +1767,10 @@ MonoBehaviour:
   Instance: {fileID: 3665997732647198429}
   EnemyAnimator: {fileID: 8019716848031325725}
   instanceEnemy: {fileID: 5393802116130621237}
+  distanciaDeteccion: 10
+  capaEnemigo:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &5123612815773048389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1803,7 +1807,7 @@ MonoBehaviour:
   runState: {fileID: 0}
   atackState: {fileID: 0}
   deathState: {fileID: 0}
-  lifeEnemy: 1
+  lifeEnemy: 2
   preparedAtack: 0
 --- !u!54 &7091643860265997882
 Rigidbody:

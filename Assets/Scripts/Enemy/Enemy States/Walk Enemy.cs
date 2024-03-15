@@ -70,7 +70,6 @@ public class WalkEnemy : MonoBehaviour, IState
     public void OnExit()
     {
         EnemyAnimator.SetFloat("Walk", 0);
-        EnemyAnimator.SetFloat("Run", 0);
     }
 
     public bool getMove()

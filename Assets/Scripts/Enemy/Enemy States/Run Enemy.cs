@@ -38,6 +38,7 @@ public class RunEnemy : MonoBehaviour, IState
             instanceEnemy.stateMachine.CurrentState = instanceEnemy.deathState;
             instanceEnemy.stateMachine.CurrentState.OnEnter();
         }
+        RayCast();
     }
 
     public void OnEnter()
@@ -104,5 +105,26 @@ public class RunEnemy : MonoBehaviour, IState
     public GameObject getPlayerObject()
     {
         return instancePlayer;
+    }
+
+    public float distanciaDeteccion = 10f; // Distancia máxima de detección
+    public LayerMask capaEnemigo; // Capa que contiene los objetos que quieres detectar
+
+    void RayCast()
+    {
+        // Obtener la dirección en la que el enemigo está mirando (eje x en este caso)
+        Vector3 direccionMirada = transform.forward;
+
+        // Lanzar un rayo en la dirección de la mirada
+        Ray rayo = new Ray(transform.position, direccionMirada);
+
+        // Verificar si el rayo golpea algún objeto en la capa de enemigos
+        if (Physics.Raycast(rayo, out RaycastHit hit, distanciaDeteccion, capaEnemigo))
+        {
+            // Se ha detectado a un enemigo
+            Debug.Log("Enemigo detectado: " + hit.collider.gameObject.name);
+
+            // Puedes realizar acciones adicionales aquí, como atacar al enemigo, seguirlo, etc.
+        }
     }
 }

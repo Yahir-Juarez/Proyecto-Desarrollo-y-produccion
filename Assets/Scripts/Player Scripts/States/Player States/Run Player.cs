@@ -9,8 +9,13 @@ public class RunPlayer : MonoBehaviour, IState
     float velocity = 20.0f;
     [SerializeField]
     GameObject Instance;
+    private Player instancePlayer;
     public Animator PlayerAnimator;
 
+    private void Awake()
+    {
+        instancePlayer = GetComponent<Player>();
+    }
     public void Execute()
     {
         float MoveX = Input.GetAxis("Horizontal");
@@ -25,6 +30,7 @@ public class RunPlayer : MonoBehaviour, IState
     public void OnEnter()
     {
         //throw new System.NotImplementedException();
+        instancePlayer.setActualSpeed(velocity);
     }
 
     public void OnExit()
@@ -61,12 +67,17 @@ public class RunPlayer : MonoBehaviour, IState
             instance.stateMachine.CurrentState = instance.runState;
             instance.stateMachine.CurrentState.OnEnter();
         }
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && instancePlayer.getArrow() > 0)
         {
             Player instance = GetComponent<Player>();
             OnExit();
             instance.stateMachine.CurrentState = instance.shotState;
             instance.stateMachine.CurrentState.OnEnter();
         }
+    }
+
+    public void setSpeed(float speed)
+    {
+        velocity = speed;
     }
 }
