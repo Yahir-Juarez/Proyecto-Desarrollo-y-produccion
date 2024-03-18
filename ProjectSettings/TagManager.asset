@@ -12,6 +12,7 @@ TagManager:
   - EnemyParasite
   - EnemyPaladin
   - EnemyTirador
+  - ADC
   layers:
   - Default
   - TransparentFX

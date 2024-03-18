@@ -10,7 +10,10 @@ public class Bullets : MonoBehaviour
     private float distance = 10;
     [SerializeField]
     private string collisionName;
-    private int m_damage;
+    [SerializeField]
+    private string otherEnemy;
+    [SerializeField]
+    private int m_damage = 1;
     private bool shot = false;
     private float Route = 0;
     // Start is called before the first frame update
@@ -46,17 +49,25 @@ public class Bullets : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == collisionName)
+        if (other.tag == collisionName || other.tag == otherEnemy)
         {
             if (shot == true)
             {
-                if (collisionName == "Player")
+                if (other.tag == "Player")
                 {
                     Player instancePlayer = other.GetComponent<Player>();
+                    instancePlayer.setDamage(1);
+                    Destroy(gameObject);
                 }
-                else if (collisionName == "EnemyCollider")
+                else if (other.tag == "EnemyCollider")
                 {
                     Enemy1 enemyInstance = other.GetComponentInParent<Enemy1>();
+                    enemyInstance.setDamage(m_damage);
+                    Destroy(gameObject);
+                }
+                else if (other.tag == "ADC")
+                {
+                    EnemyADC enemyInstance = other.GetComponentInParent<EnemyADC>();
                     enemyInstance.setDamage(m_damage);
                     Destroy(gameObject);
                 }

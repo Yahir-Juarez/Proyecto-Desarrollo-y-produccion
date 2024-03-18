@@ -48,11 +48,11 @@ public class IdlePlayer : MonoBehaviour, IState
             instancePlayer.stateMachine.CurrentState.OnEnter();
         }
 
-        if (instancePlayer.getLife() <= 0)
-        {
-            OnExit();
-            instancePlayer.stateMachine.CurrentState = instancePlayer.deathState;
-        }
+        //if (instancePlayer.getLife() <= 0)
+        //{
+        //    OnExit();
+        //    instancePlayer.stateMachine.CurrentState = instancePlayer.deathState;
+        //}
     }
 
     public void Execute()

@@ -8,6 +8,8 @@ public class JumpPlayer : MonoBehaviour, IState
     [SerializeField]
     float velocity = 7.5f;
     [SerializeField]
+    float velocityBreakJump = 10.0f;
+    [SerializeField]
     GameObject Instance;
     [SerializeField]
     Player instancePlayer;
@@ -16,6 +18,8 @@ public class JumpPlayer : MonoBehaviour, IState
     public Animator PlayerAnimator;
     private bool isJump = false;
     private bool onFloor = true;
+
+    private bool jumpBreak = false;
 
     private Rigidbody rb;
 
@@ -79,7 +83,12 @@ public class JumpPlayer : MonoBehaviour, IState
         {
             rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
             isJump = false;
-            Debug.Log("Salto 1");
+        }
+        if (Input.GetAxis("Vertical") != 0)
+        {
+            Vector3 MoveY = new Vector3(0, -1, 0);
+            Instance.transform.Translate(MoveY * velocityBreakJump * Time.deltaTime);
+            jumpBreak = true;
         }
     }
 
@@ -99,6 +108,7 @@ public class JumpPlayer : MonoBehaviour, IState
         //isJump= false;
         //onFloor = true;
         isJump = false;
+        jumpBreak = false;
     }
 
     private void OnTriggerStay(Collider other)
@@ -121,6 +131,18 @@ public class JumpPlayer : MonoBehaviour, IState
             instancePlayer.stateMachine.CurrentState = instancePlayer.idleState;
             instancePlayer.stateMachine.CurrentState.OnEnter();
         }
+        if (jumpBreak == false) { return; }
+        if (other.tag == "EnemyCollider")
+        {
+            Enemy1 instance = other.GetComponentInParent<Enemy1>();
+            instance.setDamage(1);
+        }
+        if (other.tag == "ADC")
+        {
+            EnemyADC instance = other.GetComponentInParent<EnemyADC>();
+            instance.setDamage(1);
+        }
+        jumpBreak = false;
     }
     private void OnTriggerExit(Collider other)
     {

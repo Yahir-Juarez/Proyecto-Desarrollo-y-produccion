@@ -51,10 +51,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.78569585
+  m_Radius: 1.1346375
   m_Height: 3.1964502
   m_Direction: 1
-  m_Center: {x: 0.035176754, y: 1.5323689, z: -5.5802636e-17}
+  m_Center: {x: 0.035176754, y: 1.5323689, z: -0.10847962}
 --- !u!1001 &8307960613568586969
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -106,6 +106,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ed7bd59cdd209c2418ab5f43738adf48, type: 3}
       propertyPath: m_Name
       value: Paladin WProp J Nordstrom
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ed7bd59cdd209c2418ab5f43738adf48, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: ed7bd59cdd209c2418ab5f43738adf48, type: 3}
       propertyPath: m_Controller
@@ -299,7 +303,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyAnimator: {fileID: 2459347480600484168}
-  eventAnim: {fileID: 0}
   instanceEnemy: {fileID: 4001436178761284722}
 --- !u!65 &4725308252869266045
 BoxCollider:

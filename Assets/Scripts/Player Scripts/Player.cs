@@ -25,7 +25,6 @@ public class Player : MonoBehaviour
     public ShotState shotState;
     public DeathState deathState;
 
-    private Rigidbody rb;
     //////////////////////Variables declaradas//////////////////
     private int limitYDeath = -7;
     private float limitY;
@@ -34,13 +33,21 @@ public class Player : MonoBehaviour
     private Quaternion rotacionD = Quaternion.Euler(0, 90, 0);
     private float actualSpeed = 10.0f;
 
+    private Vector3 spawnActual;
+    private Vector3 spawnInicial;
+
     bool direccionPlayer = true;
     private List<GameObject> listArrow;
+
+    private bool damageRecive = false;
+
+    ////////////// Valores Iniciales ////////////////
+    private int arrowInitial;
+    private int lifeInitial;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
         idleState = GetComponent<IdlePlayer>();
         walkState = GetComponent<WalkPlayer>();
         runState = GetComponent<RunPlayer>();
@@ -52,6 +59,10 @@ public class Player : MonoBehaviour
         stateMachine.CurrentState = idleState;
         limitY = instanceCamera.gameObject.transform.position.y;
         limitX = instanceCamera.gameObject.transform.position.x;
+        spawnActual = transform.position;
+        spawnInicial = spawnActual;
+        arrowInitial = m_arrows;
+        lifeInitial = m_life;
     }
 
     // Update is called once per frame
@@ -62,11 +73,6 @@ public class Player : MonoBehaviour
         orientation();
         comprobateArrows();
         fallWorld(transform.position);
-        //if (rb.velocity.y < -.1)
-        //{
-        //    Debug.Log("Esta cayendo");
-        //    Debug.Log(rb.velocity.y);
-        //}
     }
 
     private void moveCamera()
@@ -87,11 +93,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void setDamage()
-    {
-
-    }
-
     private void orientation()
     {
         if (Input.GetKeyDown(KeyCode.D))
@@ -104,6 +105,10 @@ public class Player : MonoBehaviour
         {
             transform.rotation = rotacionA;
             direccionPlayer = false;
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            spawnActual = transform.position;
         }
     }
 
@@ -148,7 +153,14 @@ public class Player : MonoBehaviour
     }
     public void setDamage(int damage)
     {
-        m_life -= damage;
+        if (damageRecive == false)
+        {
+            damageRecive = true;
+            stateMachine.CurrentState.OnExit();
+            m_life -= damage;
+            stateMachine.CurrentState = deathState;
+            stateMachine.CurrentState.OnEnter();
+        }
     }
     public int getLife()
     {
@@ -194,5 +206,38 @@ public class Player : MonoBehaviour
     public int getArrow()
     {
         return m_arrows;
+    }
+
+    public void setPosPlayer(float posX, float posY)
+    {
+        gameObject.transform.position = new Vector3(posX, posY, 0);
+    }
+
+    public Vector3 getSpawn()
+    {
+        return spawnActual;
+    }
+
+    public void setSpawn(Vector3 posPlayer)
+    {
+        spawnActual = posPlayer;
+    }
+
+    public void setDamageRecive(bool active)
+    {
+        damageRecive = active;
+    }
+
+    public Vector3 getPosInicial()
+    {
+        return spawnInicial;
+    }
+
+    public void resetValue()
+    {
+        m_life = lifeInitial;
+        m_arrows = arrowInitial;
+        runState.resetSpeed();
+        walkState.resetSpeed();
     }
 }

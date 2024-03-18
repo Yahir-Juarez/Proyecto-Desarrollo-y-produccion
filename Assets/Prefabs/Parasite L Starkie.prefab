@@ -51,10 +51,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.2313492
+  m_Radius: 1.4527429
   m_Height: 3.8310184
   m_Direction: 1
-  m_Center: {x: -0.033005953, y: 1.8462195, z: -2.4953697e-17}
+  m_Center: {x: -0.033005953, y: 1.8462195, z: 0.061650038}
 --- !u!1001 &4476952217321989004
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -919,6 +919,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Parasite L Starkie
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d07a41bb85d94cb47ad268f85c23a032, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 1092408308860062549, guid: d07a41bb85d94cb47ad268f85c23a032, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.000000039115545
@@ -1724,7 +1728,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyAnimator: {fileID: 8019716848031325725}
-  eventAnim: {fileID: 0}
   instanceEnemy: {fileID: 5393802116130621237}
 --- !u!114 &8034481439886828888
 MonoBehaviour:
@@ -1767,10 +1770,6 @@ MonoBehaviour:
   Instance: {fileID: 3665997732647198429}
   EnemyAnimator: {fileID: 8019716848031325725}
   instanceEnemy: {fileID: 5393802116130621237}
-  distanciaDeteccion: 10
-  capaEnemigo:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &5123612815773048389
 MonoBehaviour:
   m_ObjectHideFlags: 0

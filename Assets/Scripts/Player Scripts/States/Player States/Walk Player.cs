@@ -10,12 +10,13 @@ public class WalkPlayer : MonoBehaviour, IState
     GameObject Instance;
     Player instancePlayer;
     public Animator PlayerAnimator;
-    private Rigidbody rb;
+
+    private float velocityInitial;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
         instancePlayer = GetComponent<Player>();
+        velocityInitial = velocity;
     }
     public void Execute()
     {
@@ -80,5 +81,10 @@ public class WalkPlayer : MonoBehaviour, IState
     public void setSpeed(float speed)
     {
         velocity = speed;
+    }
+
+    public void resetSpeed()
+    {
+        velocity = velocityInitial;
     }
 }

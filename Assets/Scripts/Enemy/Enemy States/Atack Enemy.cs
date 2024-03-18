@@ -5,7 +5,6 @@ using UnityEngine;
 public class AtackEnemy : MonoBehaviour, IState
 {
     public Animator EnemyAnimator;
-    public Animation eventAnim;
     [SerializeField]
     Enemy1 instanceEnemy;
     float timePass = 0;
@@ -47,7 +46,6 @@ public class AtackEnemy : MonoBehaviour, IState
         }
     }
 
-
     public void Execute()
     {
         timePass += Time.deltaTime;
@@ -55,6 +53,10 @@ public class AtackEnemy : MonoBehaviour, IState
 
     public void OnEnter()
     {
+        if (instanceEnemy == null)
+        {
+            instanceEnemy = GetComponent<Enemy1>();
+        }
         EnemyAnimator.SetBool("isAtack", true);
         timePass = 0;
     }
@@ -62,5 +64,29 @@ public class AtackEnemy : MonoBehaviour, IState
     public void OnExit()
     {
         EnemyAnimator.SetBool("isAtack", false);
+    }
+
+    public void AtackPlayer()
+    {
+        if (instanceEnemy.runState.getPlayerObject() != null)
+        {
+            Player instance = instanceEnemy.runState.getPlayerObject().GetComponent<Player>();
+            instance.setDamage(1);
+        }
+    }
+    public void onExitState()
+    {
+        if (instanceEnemy.runState.getRunState() == false)
+        {
+            instanceEnemy.stateMachine.CurrentState.OnExit();
+            instanceEnemy.stateMachine.CurrentState = instanceEnemy.walkState;
+            instanceEnemy.stateMachine.CurrentState.OnEnter();
+        }
+        else if (instanceEnemy.runState.getAtackState() == false)
+        {
+            instanceEnemy.stateMachine.CurrentState.OnExit();
+            instanceEnemy.stateMachine.CurrentState = instanceEnemy.runState;
+            instanceEnemy.stateMachine.CurrentState.OnEnter();
+        }
     }
 }

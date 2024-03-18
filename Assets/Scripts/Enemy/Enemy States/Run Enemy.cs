@@ -38,7 +38,6 @@ public class RunEnemy : MonoBehaviour, IState
             instanceEnemy.stateMachine.CurrentState = instanceEnemy.deathState;
             instanceEnemy.stateMachine.CurrentState.OnEnter();
         }
-        RayCast();
     }
 
     public void OnEnter()
@@ -51,27 +50,56 @@ public class RunEnemy : MonoBehaviour, IState
         EnemyAnimator.SetFloat("Run", 0);
     }
 
+    bool onEnterRun = false;
+    bool onEnterAtack = false;
+    bool onEnterPlayer = false;
     private void OnTriggerEnter(Collider cPlayer)
     {
         if (cPlayer.gameObject.CompareTag("Player"))
         {
             if (instanceEnemy.getLife() > 0)
             {
-                O_instancePlayer = cPlayer.GetComponent<Player>();
-                if (instanceEnemy.preparedAtack == true && instancePlayer == null)
+                if (onEnterRun == false)
                 {
+                    if (O_instancePlayer == null)
+                    {
+                        O_instancePlayer = cPlayer.GetComponent<Player>();
+                    }
+                    onEnterRun = true;
+                    instanceEnemy.stateMachine.CurrentState.OnExit();
+                    instanceEnemy.stateMachine.CurrentState = instanceEnemy.runState;
+                    instanceEnemy.stateMachine.CurrentState.OnEnter();
+                }
+                else if (onEnterAtack == false) 
+                { 
+                    onEnterAtack= true;
                     instanceEnemy.stateMachine.CurrentState.OnExit();
                     instancePlayer = cPlayer.gameObject;
                     instanceEnemy.stateMachine.CurrentState = instanceEnemy.atackState;
                     instanceEnemy.stateMachine.CurrentState.OnEnter();
                 }
-                else
-                {
-                    instanceEnemy.preparedAtack = true;
-                    instanceEnemy.stateMachine.CurrentState.OnExit();
-                    instanceEnemy.stateMachine.CurrentState = instanceEnemy.runState;
-                    instanceEnemy.stateMachine.CurrentState.OnEnter();
+                else if(onEnterPlayer == false) 
+                { 
+                    onEnterPlayer = true;
                 }
+
+                //O_instancePlayer = cPlayer.GetComponent<Player>();
+                //if (instanceEnemy.preparedAtack == true && instancePlayer == null)
+                //{
+                //    instanceEnemy.stateMachine.CurrentState.OnExit();
+                //    instancePlayer = cPlayer.gameObject;
+                //    instanceEnemy.stateMachine.CurrentState = instanceEnemy.atackState;
+                //    instanceEnemy.stateMachine.CurrentState.OnEnter();
+                //}
+                //else
+                //{
+                //    instanceEnemy.preparedAtack = true;
+                //    instanceEnemy.stateMachine.CurrentState.OnExit();
+                //    instanceEnemy.stateMachine.CurrentState = instanceEnemy.runState;
+                //    instanceEnemy.stateMachine.CurrentState.OnEnter();
+                //}
+
+
             }
         }
     }
@@ -79,17 +107,37 @@ public class RunEnemy : MonoBehaviour, IState
     {
         if (cPlayer.gameObject.CompareTag("Player"))
         {
-            if (instancePlayer == null && instanceEnemy.preparedAtack == true)
+            if (onEnterPlayer == true)
             {
+                onEnterPlayer = false;
+            }
+            else if (onEnterAtack == true)
+            {
+                onEnterAtack = false;
+                instancePlayer = null;
+                instanceEnemy.preparedAtack = false;
+                
+            }
+            else if (onEnterRun == true)
+            {
+                onEnterRun = false;
+                instancePlayer = null;
                 instanceEnemy.stateMachine.CurrentState.OnExit();
                 instanceEnemy.preparedAtack = false;
                 instanceEnemy.stateMachine.CurrentState = instanceEnemy.walkState;
                 instanceEnemy.stateMachine.CurrentState.OnEnter();
             }
-            else
-            {
-                instancePlayer = null;
-            }
+            //if (instancePlayer == null && instanceEnemy.preparedAtack == true)
+            //{
+            //    instanceEnemy.stateMachine.CurrentState.OnExit();
+            //    instanceEnemy.preparedAtack = false;
+            //    instanceEnemy.stateMachine.CurrentState = instanceEnemy.walkState;
+            //    instanceEnemy.stateMachine.CurrentState.OnEnter();
+            //}
+            //else
+            //{
+            //    instancePlayer = null;
+            //}
         }
     }
 
@@ -107,24 +155,12 @@ public class RunEnemy : MonoBehaviour, IState
         return instancePlayer;
     }
 
-    public float distanciaDeteccion = 10f; // Distancia máxima de detección
-    public LayerMask capaEnemigo; // Capa que contiene los objetos que quieres detectar
-
-    void RayCast()
+    public bool getAtackState()
     {
-        // Obtener la dirección en la que el enemigo está mirando (eje x en este caso)
-        Vector3 direccionMirada = transform.forward;
-
-        // Lanzar un rayo en la dirección de la mirada
-        Ray rayo = new Ray(transform.position, direccionMirada);
-
-        // Verificar si el rayo golpea algún objeto en la capa de enemigos
-        if (Physics.Raycast(rayo, out RaycastHit hit, distanciaDeteccion, capaEnemigo))
-        {
-            // Se ha detectado a un enemigo
-            Debug.Log("Enemigo detectado: " + hit.collider.gameObject.name);
-
-            // Puedes realizar acciones adicionales aquí, como atacar al enemigo, seguirlo, etc.
-        }
+        return onEnterAtack;
+    }
+    public bool getRunState()
+    {
+        return onEnterRun;
     }
 }

@@ -12,9 +12,11 @@ public class RunPlayer : MonoBehaviour, IState
     private Player instancePlayer;
     public Animator PlayerAnimator;
 
+    private float velocityInitial;
     private void Awake()
     {
         instancePlayer = GetComponent<Player>();
+        velocityInitial = velocity;
     }
     public void Execute()
     {
@@ -79,5 +81,10 @@ public class RunPlayer : MonoBehaviour, IState
     public void setSpeed(float speed)
     {
         velocity = speed;
+    }
+
+    public void resetSpeed()
+    {
+        velocity = velocityInitial;
     }
 }

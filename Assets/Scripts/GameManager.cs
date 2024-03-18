@@ -6,6 +6,13 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     private Player instancePalyer;
+    [SerializeField]
+    private EnemyFactory instanceEenemyFactory;
+    [SerializeField]
+    private ArrowFactory instanceArrowFactory;
+    [SerializeField]
+    private Camera instanceCamera;
+    Vector3 posCamera;
     public static GameManager Instance { get; private set; }
     void Awake()
     {
@@ -17,6 +24,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Hay muchas intancias creadas");
         }
+        posCamera = instanceCamera.transform.position;
     }
     // Start is called before the first frame update
     void Start()
@@ -33,5 +41,21 @@ public class GameManager : MonoBehaviour
     public Player GetPlayer()
     {
         return instancePalyer;
+    }
+
+    public EnemyFactory GetEnemyFactory()
+    {
+        return instanceEenemyFactory;
+    }
+
+    public void resetLevel()
+    {
+        instanceEenemyFactory.clearEnemys();
+        instanceEenemyFactory.createEnemy();
+        instanceArrowFactory.clearArrows();
+        instanceArrowFactory.createArrows();
+        instanceCamera.transform.position = posCamera;
+        instancePalyer.transform.position = instancePalyer.getPosInicial();
+        instancePalyer.resetValue();
     }
 }

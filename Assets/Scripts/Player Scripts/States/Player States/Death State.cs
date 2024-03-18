@@ -8,7 +8,11 @@ public class DeathState : MonoBehaviour, IState
     private Animator playerAnimator;
     [SerializeField]
     private Player instancePlayer;
-    private Rigidbody rbInstance;
+
+    private void Awake()
+    {
+        instancePlayer = GetComponent<Player>();
+    }
     public void CheckEnterConditions()
     {
 
@@ -27,13 +31,17 @@ public class DeathState : MonoBehaviour, IState
 
     public void OnExit()
     {
-
+        playerAnimator.SetBool("isDeath", false);
     }
     public void spawn()
     {
+        instancePlayer.setDamageRecive(false);
         if (instancePlayer.getLife() > 0)
         {
-
+            OnExit();
+            instancePlayer.stateMachine.CurrentState = instancePlayer.idleState;
+            instancePlayer.stateMachine.CurrentState.OnEnter();
+            transform.position = instancePlayer.getSpawn();
         }
     }
 }
