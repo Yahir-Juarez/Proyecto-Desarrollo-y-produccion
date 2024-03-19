@@ -4,3 +4,4 @@ Space: Salta.
 S: Aplasta enemigos cuando esta saltando
 Q: Dispara flechas.
 K: Crea punto de Spawn.
+LEFT SHIFT: Corre mas rapido.
