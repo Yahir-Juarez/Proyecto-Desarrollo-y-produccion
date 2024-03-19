@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     private ArrowFactory instanceArrowFactory;
     [SerializeField]
     private Camera instanceCamera;
+    [SerializeField]
+    private GameObject instanceCanvasButton;
     Vector3 posCamera;
     public static GameManager Instance { get; private set; }
     void Awake()
@@ -35,7 +37,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        PlayerDeath();
     }
 
     public Player GetPlayer()
@@ -57,5 +59,22 @@ public class GameManager : MonoBehaviour
         instanceCamera.transform.position = posCamera;
         instancePalyer.transform.position = instancePalyer.getPosInicial();
         instancePalyer.resetValue();
+        instancePalyer.stateMachine.CurrentState.OnExit();
+        instancePalyer.stateMachine.CurrentState = instancePalyer.jumpState;
+        instancePalyer.stateMachine.CurrentState.OnEnter();
+        instancePalyer.setDamageRecive(false);
+
+    }
+
+    private void PlayerDeath()
+    {
+        if (instancePalyer.getLife() <= 0)
+        {
+            instanceCanvasButton.SetActive(true);
+        }
+        else
+        {
+            instanceCanvasButton.SetActive(false);
+        }
     }
 }

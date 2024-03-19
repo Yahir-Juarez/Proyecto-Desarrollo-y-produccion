@@ -15,6 +15,8 @@ public class EnemyFactory : MonoBehaviour
     ///////  Pendiente Enemigo 3  ////////
     private List<GameObject> enemysList;
 
+    float rotateADC = 270;
+
 
     // Start is called before the first frame update
     void Start()
@@ -78,6 +80,7 @@ public class EnemyFactory : MonoBehaviour
         else if(Type == 3) 
         {
             EnemyADC newEnemy = Instantiate(enemyADC, newPosEnemy, Quaternion.identity);
+            newEnemy.gameObject.transform.Rotate(0, rotateADC, 0);
             enemysList.Add(newEnemy.gameObject);
         }
     }

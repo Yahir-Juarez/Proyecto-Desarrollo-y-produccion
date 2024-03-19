@@ -98,8 +98,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speedArrow: 15
-  distance: 10
+  distance: 30
   collisionName: Player
+  otherEnemy: 
+  m_damage: 1
 --- !u!65 &6182554209513961065
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
 
     private Vector3 spawnActual;
     private Vector3 spawnInicial;
+    private Vector3 posCamera;
 
     bool direccionPlayer = true;
     private List<GameObject> listArrow;
@@ -44,6 +45,12 @@ public class Player : MonoBehaviour
     ////////////// Valores Iniciales ////////////////
     private int arrowInitial;
     private int lifeInitial;
+
+    ////////////////// Time Spawn /////////////////////
+
+    private float timeSpawn;
+
+    ///////////////////////////////////////////////////
 
     // Start is called before the first frame update
     void Start()
@@ -63,6 +70,7 @@ public class Player : MonoBehaviour
         spawnInicial = spawnActual;
         arrowInitial = m_arrows;
         lifeInitial = m_life;
+        posCamera = instanceCamera.transform.position;
     }
 
     // Update is called once per frame
@@ -73,6 +81,7 @@ public class Player : MonoBehaviour
         orientation();
         comprobateArrows();
         fallWorld(transform.position);
+        createSpawn();
     }
 
     private void moveCamera()
@@ -83,6 +92,16 @@ public class Player : MonoBehaviour
             posPlayer = Camera.main.transform.position;
             posPlayer.x = transform.position.x;
             instanceCamera.transform.position = posPlayer;
+        }
+        else
+        {
+            Vector3 CameraPosition;
+            CameraPosition = posCamera;
+            if (transform.position.y > limitY)
+            {
+                CameraPosition.y = transform.position.y;
+            }
+            instanceCamera.transform.position = CameraPosition;
         }
         if (transform.position.y > limitY)
         {
@@ -95,20 +114,23 @@ public class Player : MonoBehaviour
 
     private void orientation()
     {
-        if (Input.GetKeyDown(KeyCode.D))
+        if (m_life > 0)
         {
-            // Aplica la rotación correspondiente
-            transform.rotation = rotacionD;
-            direccionPlayer = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            transform.rotation = rotacionA;
-            direccionPlayer = false;
-        }
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            spawnActual = transform.position;
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                // Aplica la rotación correspondiente
+                transform.rotation = rotacionD;
+                direccionPlayer = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.A))
+            {
+                transform.rotation = rotacionA;
+                direccionPlayer = false;
+            }
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                spawnActual = transform.position;
+            }
         }
     }
 
@@ -239,5 +261,20 @@ public class Player : MonoBehaviour
         m_arrows = arrowInitial;
         runState.resetSpeed();
         walkState.resetSpeed();
+    }
+
+    [SerializeField]
+    float limitSpawn = 30.0f;
+    private void createSpawn()
+    {
+        timeSpawn += Time.deltaTime;
+        if (timeSpawn >= limitSpawn)
+        {
+            if (transform.position.y >= 0)
+            {
+                spawnActual = transform.position;
+            }
+            timeSpawn = 0;
+        }
     }
 }
