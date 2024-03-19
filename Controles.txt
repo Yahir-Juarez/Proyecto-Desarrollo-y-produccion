@@ -1,0 +1,7 @@
+W: No hace nada Xdddddddd
+D: Se mueve a la derecha.
+A: Se mueve a la izquierda.
+Space: Salta.
+S: Aplasta enemigos cuando esta saltando
+Q: Dispara flechas.
+K: Crea punto de Spawn.
