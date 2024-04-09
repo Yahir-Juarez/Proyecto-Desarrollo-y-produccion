@@ -11,7 +11,7 @@ public class AtackEnemy : MonoBehaviour, IState
     bool damageRecive = false;
     public void CheckEnterConditions()
     {
-        if (instanceEnemy.getLife() < 0)
+        if (instanceEnemy.getLife() <= 0)
         {
             OnExit();
             instanceEnemy.stateMachine.CurrentState = instanceEnemy.deathState;

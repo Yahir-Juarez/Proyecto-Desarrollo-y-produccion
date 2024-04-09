@@ -8,8 +8,18 @@ public class PlatfformsMove : MonoBehaviour
     float distance = 10;
     [SerializeField]
     float speed = 1;
-    float moved = 0;
+    [SerializeField]
+    bool moveHorizontal = true;
+    [SerializeField]
+    bool moveVertical = false;
+    float movedHorizontal = 0;
     bool moveRight = true;
+
+    float movedVertical = 0;
+    bool moveUp = true;
+
+    bool inPlattform = false;
+    Player instancePlayer;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,21 +34,49 @@ public class PlatfformsMove : MonoBehaviour
 
     private void move()
     {
-        float velocity = speed;
-        if (!moveRight) 
+        if (moveHorizontal == true)
         {
-            velocity *= -1;
+            float velocity = speed;
+
+            if (!moveRight)
+            {
+                velocity *= -1;
+            }
+            Vector3 MoveX_Z = new Vector3(1, 0, 0);
+            transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+            movedHorizontal += MoveX_Z.x * velocity * Time.deltaTime;
+            if (movedHorizontal >= distance && moveRight)
+            {
+                moveRight = false;
+            }
+            else if (movedHorizontal <= 0 && !moveRight)
+            {
+                moveRight = true;
+            }
         }
-        Vector3 MoveX_Z = new Vector3(1, 0, 0);
-        transform.Translate(MoveX_Z * velocity * Time.deltaTime);
-        moved += MoveX_Z.x * velocity * Time.deltaTime;
-        if (moved >= distance && moveRight)
+        if (moveVertical == true)
         {
-            moveRight = false;
-        }
-        else if (moved <= 0 && !moveRight)
-        {
-            moveRight = true;
+            float velocity = speed;
+
+            if (!moveUp)
+            {
+                velocity *= -1;
+            }
+            Vector3 MoveX_Z = new Vector3(0, 1, 0);
+            transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+            if (inPlattform)
+            {
+                instancePlayer.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+            }
+            movedVertical += MoveX_Z.y * velocity * Time.deltaTime;
+            if (movedVertical >= distance && moveUp)
+            {
+                moveUp = false;
+            }
+            else if (movedVertical <= 0 && !moveUp)
+            {
+                moveUp = true;
+            }
         }
     }
 
@@ -47,24 +85,54 @@ public class PlatfformsMove : MonoBehaviour
         if (other.tag == "Feads")
         {
             Player instance = other.GetComponentInParent<Player>();
-            Vector3 MoveX_Z = new Vector3(0, 0, 1);
-            if (instance == null) { return; }
-            if (instance.getDireccion() == false)
+            if (moveHorizontal)
             {
-                MoveX_Z.z = -1;
+                Vector3 MoveX_Z = new Vector3(0, 0, 1);
+                if (instance == null) { return; }
+                if (instance.getDireccion() == false)
+                {
+                    MoveX_Z.z = -1;
+                }
+                float velocity = speed;
+                if (!moveRight)
+                {
+                    velocity *= -1;
+                }
+
+                instance.gameObject.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                if (instance.getArrows().Count > 0)
+                {
+                    if (instance.getArrows()[instance.getArrows().Count - 1] == null) { return; }
+                    instance.getArrows()[instance.getArrows().Count - 1].transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                }
             }
-            float velocity = speed;
-            if (!moveRight)
+            if (moveVertical)
             {
-                velocity *= -1;
-            }
-             
-            instance.gameObject.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
-            if (instance.getArrows().Count > 0) 
-            {
-                if (instance.getArrows()[instance.getArrows().Count - 1] == null) { return; } 
-                instance.getArrows()[instance.getArrows().Count - 1].transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                Vector3 MoveX_Z = new Vector3(0, 1, 0);
+                if (instance == null) { return; }
+                float velocity = speed;
+                if (!moveUp)
+                {
+                    velocity *= -1;
+                }
+
+                //instance.gameObject.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                if (instance.getArrows().Count > 0)
+                {
+                    if (instance.getArrows()[instance.getArrows().Count - 1] == null) { return; }
+                    instance.getArrows()[instance.getArrows().Count - 1].transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                }
             }
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        inPlattform = true;
+        instancePlayer = other.GetComponentInParent<Player>();
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        inPlattform = false;
     }
 }

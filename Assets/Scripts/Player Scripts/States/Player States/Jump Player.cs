@@ -84,7 +84,7 @@ public class JumpPlayer : MonoBehaviour, IState
             rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
             isJump = false;
         }
-        if (Input.GetAxis("Vertical") != 0)
+        if (Input.GetAxis("Vertical") < 0)
         {
             Vector3 MoveY = new Vector3(0, -1, 0);
             Instance.transform.Translate(MoveY * velocityBreakJump * Time.deltaTime);
