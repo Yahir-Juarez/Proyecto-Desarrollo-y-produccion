@@ -45,6 +45,11 @@ public class ShotState : MonoBehaviour, IState
 
     public void shoot()
     {
+        if (instancePLayer.getListArrow().Count == 0)
+        {
+            exitShot();
+            return;
+        }
         Bullets arrowShoting = instancePLayer.getListArrow()[instancePLayer.getListArrow().Count-1].GetComponent<Bullets>();
         shot = true;
         arrowShoting.setShotB(shot);

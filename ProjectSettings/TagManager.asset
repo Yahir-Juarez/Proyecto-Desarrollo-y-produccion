@@ -13,6 +13,7 @@ TagManager:
   - EnemyPaladin
   - EnemyTirador
   - ADC
+  - Wall
   layers:
   - Default
   - TransparentFX

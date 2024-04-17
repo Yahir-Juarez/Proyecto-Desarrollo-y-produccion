@@ -1714,6 +1714,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   life: 1
+  instancePlayer: {fileID: 1883305895364926606, guid: 23c1c5fef69dad644896ddb35ac869c8, type: 3}
   idleState: {fileID: 0}
   shotState: {fileID: 0}
   deathState: {fileID: 0}

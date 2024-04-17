@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlatfformsMove : MonoBehaviour
 {
     [SerializeField]
+    bool movePlattform = true;
+    [SerializeField]
     float distance = 10;
     [SerializeField]
     float speed = 1;
@@ -19,6 +21,7 @@ public class PlatfformsMove : MonoBehaviour
     bool moveUp = true;
 
     bool inPlattform = false;
+    bool boxInPlattform = false;
     Player instancePlayer;
     // Start is called before the first frame update
     void Start()
@@ -34,49 +37,93 @@ public class PlatfformsMove : MonoBehaviour
 
     private void move()
     {
-        if (moveHorizontal == true)
+        if (movePlattform)
         {
-            float velocity = speed;
+            if (moveHorizontal == true)
+            {
+                float velocity = speed;
 
-            if (!moveRight)
-            {
-                velocity *= -1;
+                if (!moveRight)
+                {
+                    velocity *= -1;
+                }
+                Vector3 MoveX_Z = new Vector3(1, 0, 0);
+                transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                movedHorizontal += MoveX_Z.x * velocity * Time.deltaTime;
+                if (movedHorizontal >= distance && moveRight)
+                {
+                    moveRight = false;
+                }
+                else if (movedHorizontal <= 0 && !moveRight)
+                {
+                    moveRight = true;
+                }
             }
-            Vector3 MoveX_Z = new Vector3(1, 0, 0);
-            transform.Translate(MoveX_Z * velocity * Time.deltaTime);
-            movedHorizontal += MoveX_Z.x * velocity * Time.deltaTime;
-            if (movedHorizontal >= distance && moveRight)
+            if (moveVertical == true)
             {
-                moveRight = false;
-            }
-            else if (movedHorizontal <= 0 && !moveRight)
-            {
-                moveRight = true;
+                float velocity = speed;
+
+                if (!moveUp)
+                {
+                    velocity *= -1;
+                }
+                Vector3 MoveX_Z = new Vector3(0, 1, 0);
+                transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                if (inPlattform)
+                {
+                    instancePlayer.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                }
+                movedVertical += MoveX_Z.y * velocity * Time.deltaTime;
+                if (movedVertical >= distance && moveUp)
+                {
+                    moveUp = false;
+                }
+                else if (movedVertical <= 0 && !moveUp)
+                {
+                    moveUp = true;
+                }
             }
         }
-        if (moveVertical == true)
+        else if (boxInPlattform)
+        {
+            if (moveVertical == true)
+            {
+                if (movedVertical < distance)
+                {
+                    float velocity = speed;
+
+                    velocity *= -1;
+
+                    Vector3 MoveX_Z = new Vector3(0, 1, 0);
+                    transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                    if (inPlattform)
+                    {
+                        if (instancePlayer != null)
+                        {
+                            instancePlayer.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                        }
+                    }
+                    velocity *= -1;
+                    movedVertical += MoveX_Z.y * velocity * Time.deltaTime;
+                }
+            }
+
+        }
+        else if (movedVertical >= 0)
         {
             float velocity = speed;
 
-            if (!moveUp)
-            {
-                velocity *= -1;
-            }
             Vector3 MoveX_Z = new Vector3(0, 1, 0);
             transform.Translate(MoveX_Z * velocity * Time.deltaTime);
             if (inPlattform)
             {
-                instancePlayer.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                if (instancePlayer != null)
+                {
+                    instancePlayer.transform.Translate(MoveX_Z * velocity * Time.deltaTime);
+                }
             }
+            velocity *= -1;
             movedVertical += MoveX_Z.y * velocity * Time.deltaTime;
-            if (movedVertical >= distance && moveUp)
-            {
-                moveUp = false;
-            }
-            else if (movedVertical <= 0 && !moveUp)
-            {
-                moveUp = true;
-            }
         }
     }
 
@@ -128,11 +175,21 @@ public class PlatfformsMove : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Plattform")
+        {
+            boxInPlattform = true;
+            return;
+        }
         inPlattform = true;
         instancePlayer = other.GetComponentInParent<Player>();
     }
     private void OnTriggerExit(Collider other)
     {
+        if (other.tag == "Plattform")
+        {
+            boxInPlattform = false;
+            return;
+        }
         inPlattform = false;
     }
 }

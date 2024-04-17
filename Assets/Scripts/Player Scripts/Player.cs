@@ -264,7 +264,7 @@ public class Player : MonoBehaviour
     }
 
     [SerializeField]
-    float limitSpawn = 30.0f;
+    float limitSpawn = 15.0f;
     private void createSpawn()
     {
         timeSpawn += Time.deltaTime;
@@ -275,6 +275,9 @@ public class Player : MonoBehaviour
                 spawnActual = transform.position;
             }
             timeSpawn = 0;
+            Vector3 pos = transform.position;
+            pos.z = 0;
+            transform.position = pos;
         }
     }
 }
